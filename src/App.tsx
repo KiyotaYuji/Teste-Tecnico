@@ -1,15 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { type CreditCard } from './types/Card';
-
-// Swiper v12 - SEM importações de CSS!
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Pagination } from 'swiper/modules';
 import type { Swiper as SwiperType } from 'swiper';
-
-// Ícones
-import { Plus, RotateCw } from 'lucide-react';
-
-// Componentes
+import { Plus, RotateCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { CreditCardFront } from './components/CreditCardVisual/CreditCardFront';
 import { CreditCardBack } from './components/CreditCardVisual/CreditCardBack';
 import { CreditCardForm } from './components/CreditCardForm';
@@ -19,11 +13,17 @@ export default function App() {
     const [showForm, setShowForm] = useState(false);
     const [flippedCards, setFlippedCards] = useState<Set<string>>(new Set());
     const [currentCarouselIndex, setCurrentCarouselIndex] = useState(0);
+    const swiperRef = useRef<SwiperType | null>(null);
 
     const handleAddCard = (newCard: CreditCard) => {
         setCards(prevCards => [...prevCards, newCard]);
-        setCurrentCarouselIndex(cards.length);
         setShowForm(false);
+        setTimeout(() => {
+            if (swiperRef.current) {
+                swiperRef.current.slideTo(cards.length);
+            }
+            setCurrentCarouselIndex(cards.length);
+        }, 100);
     };
 
     const handleCloseForm = () => {
@@ -34,19 +34,31 @@ export default function App() {
         const currentCardId = cards[currentCarouselIndex]?.id;
         if (!currentCardId) return;
 
-        const newFlippedSet = new Set(flippedCards);
+        setFlippedCards(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(currentCardId)) {
+                newSet.delete(currentCardId);
+            } else {
+                newSet.add(currentCardId);
+            }
+            return newSet;
+        });
+    };
 
-        if (newFlippedSet.has(currentCardId)) {
-            newFlippedSet.delete(currentCardId);
-        } else {
-            newFlippedSet.add(currentCardId);
+    const goToNextCard = () => {
+        if (swiperRef.current && cards.length > 1) {
+            swiperRef.current.slideNext();
         }
+    };
 
-        setFlippedCards(newFlippedSet);
+    const goToPrevCard = () => {
+        if (swiperRef.current && cards.length > 1) {
+            swiperRef.current.slidePrev();
+        }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-900 text-white p-8 overflow-hidden flex flex-col items-center relative">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-900 text-white overflow-hidden flex flex-col">
             {/* Efeitos de fundo */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" />
@@ -54,55 +66,96 @@ export default function App() {
             </div>
 
             {/* Título */}
-            <div className="relative z-10 mb-8">
+            <div className="relative z-10 pt-8 px-8">
                 <h1 className="text-5xl md:text-6xl font-bold text-center mb-4 bg-gradient-to-r from-purple-400 via-pink-300 to-purple-400 bg-clip-text text-transparent">
                     Gestão de Cartões de Crédito
                 </h1>
-                <p className="text-purple-200 text-center text-lg">
+                <p className="text-purple-200 text-center text-lg mb-8">
                     Adicione e gerencie seus cartões com estilo
                 </p>
             </div>
 
-            {/* Conteúdo Principal */}
-            <div className="w-full max-w-6xl flex-grow flex flex-col justify-center items-center relative z-10">
+            {/* Área do Carrossel */}
+            <div className="flex-grow flex items-center justify-center relative z-10">
 
-                {/* CARROSSEL */}
+                {/* CARROSSEL HORIZONTAL COM SWIPER */}
                 {cards.length > 0 && !showForm && (
-                    <div className="w-full space-y-8">
-                        <div className="w-full" style={{ height: '400px' }}>
+                    <div className="w-full max-w-6xl px-4">
+                        <div className="relative">
+                            {/* Setas Customizadas */}
+                            {cards.length > 1 && (
+                                <>
+                                    <button
+                                        onClick={goToPrevCard}
+                                        className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-purple-600/30 hover:bg-purple-600/50 backdrop-blur-sm text-white rounded-full flex items-center justify-center transition-all hover:scale-110 shadow-xl"
+                                    >
+                                        <ChevronLeft className="w-6 h-6" />
+                                    </button>
+
+                                    <button
+                                        onClick={goToNextCard}
+                                        className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-purple-600/30 hover:bg-purple-600/50 backdrop-blur-sm text-white rounded-full flex items-center justify-center transition-all hover:scale-110 shadow-xl"
+                                    >
+                                        <ChevronRight className="w-6 h-6" />
+                                    </button>
+                                </>
+                            )}
+
                             <Swiper
                                 effect="coverflow"
                                 grabCursor={true}
                                 centeredSlides={true}
-                                slidesPerView="auto"
+                                slidesPerView={3}
+                                spaceBetween={30}
+                                loop={true}
                                 coverflowEffect={{
-                                    rotate: 50,
+                                    rotate: 30,
                                     stretch: 0,
-                                    depth: 100,
+                                    depth: 200,
                                     modifier: 1,
-                                    slideShadows: true,
+                                    slideShadows: false,
                                 }}
                                 pagination={{
                                     clickable: true,
                                     dynamicBullets: true,
                                 }}
                                 modules={[EffectCoverflow, Pagination]}
-                                className="w-full h-full"
-                                onSlideChange={(swiper: SwiperType) => setCurrentCarouselIndex(swiper.activeIndex)}
+                                onSwiper={(swiper) => {
+                                    swiperRef.current = swiper;
+                                }}
+                                onSlideChange={(swiper: SwiperType) => {
+                                    setCurrentCarouselIndex(swiper.activeIndex);
+                                }}
                                 initialSlide={currentCarouselIndex}
+                                className="my-swiper"
+                                breakpoints={{
+                                    320: {
+                                        slidesPerView: 1,
+                                        spaceBetween: 20
+                                    },
+                                    768: {
+                                        slidesPerView: 2,
+                                        spaceBetween: 30
+                                    },
+                                    1024: {
+                                        slidesPerView: 3,
+                                        spaceBetween: 30
+                                    }
+                                }}
                             >
-                                {cards.map((card) => {
+                                {cards.map((card, index) => {
                                     const isFlipped = flippedCards.has(card.id);
 
                                     return (
-                                        <SwiperSlide key={card.id} style={{ width: '320px' }}>
-                                            <div className="flex items-center justify-center h-full py-8">
+                                        <SwiperSlide key={card.id}>
+                                            <div className="flex items-center justify-center py-8">
                                                 <div
-                                                    className="w-80 h-48 relative cursor-pointer"
+                                                    onClick={() => index === currentCarouselIndex && toggleCardFlip()}
+                                                    className={`relative ${index === currentCarouselIndex ? 'cursor-pointer' : 'pointer-events-none'}`}
                                                     style={{
                                                         transformStyle: 'preserve-3d',
+                                                        transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
                                                         transition: 'transform 0.6s',
-                                                        transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
                                                     }}
                                                 >
                                                     {/* Frente */}
@@ -128,8 +181,8 @@ export default function App() {
                             </Swiper>
                         </div>
 
-                        {/* Botão de Virar */}
-                        <div className="flex flex-col items-center gap-4">
+                        {/* Controles */}
+                        <div className="flex flex-col items-center gap-4 mt-6">
                             <button
                                 onClick={toggleCardFlip}
                                 className="px-8 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl shadow-lg flex items-center gap-3 transition-all hover:scale-105 font-semibold"
@@ -138,9 +191,8 @@ export default function App() {
                                 {flippedCards.has(cards[currentCarouselIndex]?.id) ? 'Ver Frente' : 'Ver Verso'}
                             </button>
 
-                            {/* Contador */}
                             <p className="text-purple-300 text-sm">
-                                Cartão {currentCarouselIndex + 1} de {cards.length}
+                                Cartão {currentCarouselIndex + 1} de {cards.length} • Clique no cartão ou no botão para virar
                             </p>
                         </div>
                     </div>
@@ -162,7 +214,7 @@ export default function App() {
 
             {/* BOTÃO DE ADICIONAR */}
             {!showForm && (
-                <div className="flex justify-center mt-12 relative z-10">
+                <div className="flex justify-center pb-8 relative z-10">
                     <div className="relative group">
                         <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity" />
 

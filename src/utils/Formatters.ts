@@ -12,6 +12,11 @@ export const formatCPF = (value: string) => {
 
 export const formatDate = (value: string) => {
     const cleaned = value.replace(/\D/g, '');
-    const formatted = cleaned.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
+    let formatted = cleaned;
+
+    if (cleaned.length > 2) {
+        formatted = cleaned.replace(/(\d{2})(\d{2})(\d{0,4})/, '$1/$2/$3');
+    }
+
     return formatted.substring(0, 10);
 };
