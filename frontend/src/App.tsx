@@ -37,20 +37,34 @@ export default function App() {
     };
 
     const handleAddCard = async (newCard: Omit<CreditCard, 'id'>) => {
+        try {
+            const createdCard = await api.createCard(newCard);
 
-        const createdCard = await api.createCard(newCard);
-        setCards(prevCards => [...prevCards, createdCard]);
-        setShowForm(false);
+            // Adiciona o cartão
+            setCards(prevCards => [...prevCards, createdCard]);
+            setShowForm(false);
 
-        setTimeout(() => {
-            if (swiperRef.current) {
-                swiperRef.current.slideTo(cards.length);
-            }
-            setCurrentCarouselIndex(cards.length);
-        }, 100);
+            // Aguarda o React atualizar o DOM
+            setTimeout(() => {
+                const newIndex = cards.length;
+                setCurrentCarouselIndex(newIndex);
 
+                // Força o Swiper a ir para o novo cartão
+                if (swiperRef.current) {
+                    // Destroi e recria o loop para garantir que funcione
+                    if (cards.length > 0) {
+                        swiperRef.current.loopDestroy();
+                        swiperRef.current.loopCreate();
+                        swiperRef.current.slideToLoop(newIndex, 300);
+                    } else {
+                        swiperRef.current.slideTo(newIndex, 300);
+                    }
+                }
+            }, 150);  // ← Aumentei o tempo para 150ms
+        } catch (err) {
+            throw err;
+        }
     };
-
     const handleDeleteCard = async (id: string) => {
         if (!confirm('Tem certeza que deseja deletar este cartão?')) return;
 

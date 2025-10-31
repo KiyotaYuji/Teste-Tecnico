@@ -1,17 +1,20 @@
-# Dependencies
+# ===== DEPENDENCIES =====
 node_modules/
 frontend/node_modules/
 backend/node_modules/
+.pnp
+.pnp.js
 
-# Build outputs
+# ===== BUILD OUTPUTS =====
+dist/
+build/
 frontend/dist/
 frontend/build/
 backend/dist/
 backend/build/
-dist/
-build/
+*.local
 
-# Environment variables
+# ===== ENVIRONMENT VARIABLES =====
 .env
 .env.local
 .env.development.local
@@ -22,69 +25,82 @@ frontend/.env.local
 backend/.env
 backend/.env.local
 
-# Database/Storage
+# ===== DATABASE / STORAGE =====
 backend/src/data/cards.json
 *.db
 *.sqlite
+*.sqlite3
 
-# Logs
+# ===== LOGS =====
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-logs/
 pnpm-debug.log*
 
-# IDE
-.idea/
+# ===== TESTING =====
+coverage/
+*.lcov
+.nyc_output/
+.vitest/
+
+# ===== IDE / EDITORS =====
 .vscode/
+.idea/
 *.swp
 *.swo
+*.swn
 *~
-*.iml
 .DS_Store
+*.sublime-project
+*.sublime-workspace
 
-# OS
+# ===== OS =====
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 desktop.ini
-.AppleDouble
-.LSOverride
 
-# TypeScript
+# ===== TYPESCRIPT =====
 *.tsbuildinfo
-*.d.ts.map
+.tsbuildinfo
 
-# Testing
-coverage/
-.nyc_output/
-*.lcov
+# ===== NEXT.JS (caso use depois) =====
+.next/
+out/
 
-# Temporary files
+# ===== VERCEL =====
+.vercel
+
+# ===== YARN =====
+yarn-error.log
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# ===== NPM =====
+package-lock.json
+npm-shrinkwrap.json
+
+# ===== TEMPORARY FILES =====
 tmp/
 temp/
 *.tmp
-*.temp
+*.bak
+*.backup
 
-# Package manager
-.pnpm-store/
-.yarn/
-.yarn-integrity
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+# ===== DOCKER =====
+*.env.docker
+docker-compose.override.yml
 
-# Production
-*.tgz
-*.zip
-*.tar.gz
-
-# Debug
-.vscode/launch.json
-.vscode/settings.json
-
-# Cache
-.eslintcache
+# ===== MISC =====
 .cache/
 .parcel-cache/
+.eslintcache
