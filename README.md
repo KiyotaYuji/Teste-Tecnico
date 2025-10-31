@@ -13,8 +13,12 @@ Sistema completo para gerenciamento de cartões de crédito com validações rob
 
 ## 📸 Demonstração
 
-[Link do Deploy - Frontend](seu-link-vercel-aqui)  
-[Link do Deploy - Backend](seu-link-render-aqui)
+🌐 **[ACESSAR APLICAÇÃO](https://creditcart-tela.vercel.app/)**
+
+**Links do Deploy:**
+- 🎨 **Frontend**: [https://creditcart-tela.vercel.app/](https://creditcart-tela.vercel.app/)
+- 🔌 **Backend API**: [https://credit-card-api-41qy.onrender.com](https://credit-card-api-41qy.onrender.com)
+- 🩺 **Health Check**: [https://credit-card-api-41qy.onrender.com/health](https://credit-card-api-41qy.onrender.com/health)
 
 ## ✨ Funcionalidades
 
@@ -653,10 +657,12 @@ npm run build
 
 ## 👤 Autor
 
-**[Yuji Chikara Kiyota]**
+**Yuji Chikara Kiyota**
 - GitHub: [KiyotaYuji](https://github.com/KiyotaYuji)
 - LinkedIn: [Yuji Kiyota](https://www.linkedin.com/in/yujikiyota/)
-- Email: seu.email@exemplo.com
+- Email: yujikiyota@hotmail.com
+
+
 
 ## 📄 Licença
 
