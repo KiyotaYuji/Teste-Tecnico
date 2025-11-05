@@ -1,6 +1,6 @@
 import type { CreditCard } from '../types/Card';
 
-const API_URL = 'http://localhost:3001/api';
+const API_URL = '/api';
 
 export const api = {
     // Lista todos os cartões
