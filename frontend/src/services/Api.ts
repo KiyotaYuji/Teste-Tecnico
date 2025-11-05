@@ -1,6 +1,6 @@
 import type { CreditCard } from '../types/Card';
 
-const API_URL = 'https://credit-card-api-41qy.onrender.com/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 export const api = {
     // Lista todos os cartões
