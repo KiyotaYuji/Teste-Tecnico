@@ -1,6 +1,6 @@
 import type { CreditCard } from '../types/Card';
 
-const API_URL = '/api';
+const API_URL = 'https://credit-card-api-41qy.onrender.com/api';
 
 export const api = {
     // Lista todos os cartões

@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3001;
 
 // Middlewares
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://creditcart-tela.vercel.app/']
+    origin: ['http://localhost:3000', 'https://creditcart-tela.vercel.app', 'http://localhost:5173']
 }));
 app.use(express.json());
 
